@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+
+</head>
+<body>
+    <div id="app">
+        <div v-for="(menu, index) in menus" :key="index">
+            <span>{{menu.date}} --  {{index}}</span>
+            <span>{{menu.dishLabel}}</span>
+        </div>
+        <span @click="create()">Création d'un menu du jour</span>
+        <div v-if="selectedMenu">
+            <span>Edition du menu du {{ selectedMenu.date }}</span>
+            <select v-model="selectedMenu.dish">
+                <option v-for="(dish, key) in dishes" :value="dish">
+                    {{dish.label}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
