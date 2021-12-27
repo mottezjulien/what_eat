@@ -7,9 +7,7 @@ import what.eat.menu.domain.model.DefinedMenu;
 import what.eat.menu.domain.model.MenuSchedule;
 import what.eat.menu.domain.port.MenuOutput;
 import what.eat.recipe.domain.RecipeOutput;
-import what.eat.recipe.domain.model.RecipeDishAbstract;
-import what.eat.recipe.domain.model.RecipeDishFinal;
-import what.eat.recipe.domain.model.RecipeDishFinalSimple;
+import what.eat.recipe.domain.model.RecipeDish;
 import what.eat.rule.domain.port.RuleOutput;
 
 import java.time.LocalDate;
@@ -25,14 +23,14 @@ public class RuleEngine_generateSimple_Test {
     private RuleOutput ruleOutput = mock(RuleOutput.class);
     private RecipeOutput recipeOutput = mock(RecipeOutput.class);
 
-    private RecipeDishFinal any = new RecipeDishFinalSimple("any", "any");
+    private RecipeDish any = new RecipeDish("any", "any", RecipeDish.RecipeDishType.SIMPLE);
 
     @BeforeEach
     void setup() {
         Ports ports = new Ports(menuOutput, ruleOutput, recipeOutput);
         Ports.setInstance(ports);
 
-        when(recipeOutput.anyFinal()).thenReturn(Optional.of(any));
+        when(recipeOutput.anySelectable()).thenReturn(Optional.of(any));
     }
 
     @Test
@@ -44,7 +42,7 @@ public class RuleEngine_generateSimple_Test {
 
     @Test
     public void shouldPrioriseSelectedElementIfNotAvailable_minusWay() throws RuleEngineException {
-        RecipeDishFinalSimple boeufCarotte = new RecipeDishFinalSimple("idBoeufCarotte", "Boeuf Carotte");
+        RecipeDish boeufCarotte = new RecipeDish("idBoeufCarotte", "Boeuf Carotte", RecipeDish.RecipeDishType.SIMPLE);
 
         RuleEngine ruleEngine = new RuleEngine();
         Rule rule = new Rule("", RulePriority.MUST, RuleComparator.MIN, 1, boeufCarotte);
@@ -55,7 +53,7 @@ public class RuleEngine_generateSimple_Test {
 
     @Test
     public void shouldAnyIfEnough_minusWay() throws RuleEngineException {
-        RecipeDishFinalSimple boeufCarotte = new RecipeDishFinalSimple("idBoeufCarotte", "Boeuf Carotte");
+        RecipeDish boeufCarotte = new RecipeDish("idBoeufCarotte", "Boeuf Carotte", RecipeDish.RecipeDishType.SIMPLE);
 
         RuleEngine ruleEngine = new RuleEngine();
         Rule rule = new Rule("", RulePriority.MUST, RuleComparator.MIN, 1, boeufCarotte);

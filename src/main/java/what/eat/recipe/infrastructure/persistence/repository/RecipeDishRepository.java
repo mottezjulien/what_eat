@@ -23,8 +23,8 @@ public interface RecipeDishRepository extends JpaRepository<RecipeDishEntity, St
 
     String WHERE_ID = " WHERE dish.id = :id";
 
-    @Query(SELECT + " WHERE (dish.type = 'FINAL_SIMPLE' or dish.type = 'FINAL_COMPOSITE')")
-    List<RecipeDishEntity> findFinals();
+    @Query(SELECT + " WHERE dish.type like 'SELECTABLE_%'")
+    List<RecipeDishEntity> findAllSelectable();
 
 
     @Query(SELECT + FETCH_ALL_CHILDREN + WHERE_ID)

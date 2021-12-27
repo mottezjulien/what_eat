@@ -1,7 +1,6 @@
 package what.eat.menu.domain.model;
 
 import what.eat.recipe.domain.model.RecipeDish;
-import what.eat.recipe.domain.model.RecipeDishFinal;
 import what.eat.recipe.domain.model.RecipeIndicator;
 
 import java.time.LocalDate;
@@ -11,14 +10,14 @@ import java.util.UUID;
 public class DefinedMenu implements Menu {
 
     private final String internalId;
-    private final RecipeDishFinal dish;
+    private final RecipeDish dish;
     private final LocalDate date;
 
-    public DefinedMenu(RecipeDishFinal dish, LocalDate date) {
+    public DefinedMenu(RecipeDish dish, LocalDate date) {
         this(UUID.randomUUID().toString(), dish, date);
     }
 
-    public DefinedMenu(String internalId, RecipeDishFinal dish, LocalDate date) {
+    public DefinedMenu(String internalId, RecipeDish dish, LocalDate date) {
         this.internalId = internalId;
         this.dish = dish;
         this.date = date;
@@ -37,14 +36,11 @@ public class DefinedMenu implements Menu {
     }
 
     public String dishLabel() {
-       return dish.label();
+        return dish.label();
     }
 
-    public boolean accept(RecipeIndicator indicator) {
-        if(indicator instanceof RecipeDish) {
-            return dish.equals(indicator);
-        }
-        return false;
+    public boolean has(RecipeIndicator compareTo) {
+        return dish.has(compareTo);
     }
 
     @Override
@@ -59,4 +55,5 @@ public class DefinedMenu implements Menu {
     public int hashCode() {
         return Objects.hash(internalId);
     }
+
 }

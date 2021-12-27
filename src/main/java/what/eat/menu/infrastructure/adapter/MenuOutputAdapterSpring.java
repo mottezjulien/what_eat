@@ -11,7 +11,6 @@ import what.eat.menu.infrastructure.persistence.MenuEntity;
 import what.eat.menu.infrastructure.persistence.MenuRepository;
 import what.eat.menu.infrastructure.persistence.MenuWeekEntity;
 import what.eat.menu.infrastructure.persistence.MenuWeekRepository;
-import what.eat.recipe.domain.model.RecipeDishFinal;
 import what.eat.recipe.infrastructure.adapter.RecipeDishEntityWrapper;
 import what.eat.recipe.infrastructure.persistence.entity.RecipeDishEntity;
 
@@ -70,7 +69,7 @@ public class MenuOutputAdapterSpring implements MenuOutput {
     }
 
     private DefinedMenu toModel(MenuEntity menuEntity) {
-        return new DefinedMenu(menuEntity.getId(), dishWrapper.toFinalModel(menuEntity.getDish()), menuEntity.getDate());
+        return new DefinedMenu(menuEntity.getId(), dishWrapper.toModel(menuEntity.getDish()), menuEntity.getDate());
     }
 
 }

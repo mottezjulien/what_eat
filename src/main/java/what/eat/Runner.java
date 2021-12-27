@@ -79,6 +79,8 @@ public class Runner {
 
         createAbstractDoneDish("Féculent", pate, riz);
 
+        RecipeDishEntity gratinChouFleur = createFinalDoneDish("Gratin de chou-fleur");
+        createAbstractDoneDish("Gratin", gratinChouFleur);
 
         RecipeDishEntity boeuf = createAbstractDoneDish("Boeuf", spaghettiBolo);
         RecipeDishEntity chicken = createAbstractDoneDish("Poulet", rizPoulet);
@@ -88,32 +90,32 @@ public class Runner {
         RecipeDishEntity carotte = createAbstractDoneDish("Legume", saucisseLentilleCarotte);
         createAbstractDoneDish("Legume", carotte);
 
+
+        RuleEngineEntity userRule = new RuleEngineEntity();
+        userRule.setId(UUID.randomUUID().toString());
+        ruleEngineRepository.save(userRule);
+
         RuleEntity mustMinOneChickenRule = new RuleEntity();
         mustMinOneChickenRule.setId(UUID.randomUUID().toString());
         mustMinOneChickenRule.setComparator(RuleComparator.MIN);
         mustMinOneChickenRule.setPriority(RulePriority.MUST);
         mustMinOneChickenRule.setValue(1);
         mustMinOneChickenRule.setComparedTo(chicken);
+        mustMinOneChickenRule.setRuleEngine(userRule);
         ruleRepository.save(mustMinOneChickenRule);
 
         RuleEntity shouldMaxThreeMeatsRule = new RuleEntity();
         shouldMaxThreeMeatsRule.setId(UUID.randomUUID().toString());
         shouldMaxThreeMeatsRule.setComparator(RuleComparator.MAX);
         shouldMaxThreeMeatsRule.setPriority(RulePriority.SHOULD);
-        shouldMaxThreeMeatsRule.setValue(3);
+        shouldMaxThreeMeatsRule.setValue(1);
         shouldMaxThreeMeatsRule.setComparedTo(meat);
+        shouldMaxThreeMeatsRule.setRuleEngine(userRule);
         ruleRepository.save(shouldMaxThreeMeatsRule);
-
-        RuleEngineEntity userRule = new RuleEngineEntity();
-        userRule.setId(UUID.randomUUID().toString());
-        userRule.getRules().add(shouldMaxThreeMeatsRule);
-        userRule.getRules().add(mustMinOneChickenRule);
-        ruleEngineRepository.save(userRule);
-
 
         MenuSchedule current = MenuSchedule.current();
         try {
-            Menu today = current.of(LocalDate.now());
+            Menu today = current.findOrGenerate(LocalDate.now());
         } catch (MenuWeekException e) {
             e.printStackTrace();
         }
@@ -121,11 +123,11 @@ public class Runner {
     }
 
     private RecipeDishEntity createAbstractDoneDish(String label, RecipeDishEntity... children) {
-        return createDish(label, RecipeDishType.ABSTRACT, children);
+        return createDish(label, RecipeDishType.MISSING, children);
     }
 
     private RecipeDishEntity createFinalDoneDish(String label, RecipeDishEntity... children) {
-        return createDish(label, RecipeDishType.FINAL_SIMPLE, children);
+        return createDish(label, RecipeDishType.SELECTABLE_SIMPLE, children);
     }
 
     private RecipeDishEntity createDish(String label, RecipeDishType type, RecipeDishEntity... children) {

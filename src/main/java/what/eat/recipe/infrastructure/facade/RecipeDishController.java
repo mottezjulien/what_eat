@@ -30,7 +30,7 @@ public class RecipeDishController {
 
     @GetMapping("/type/final/")
     public Stream<RecipeDishDTO> findAll() {
-        return dishRepository.findFinals()
+        return dishRepository.findAllSelectable()
                 .stream()
                 .map(this::toDTO);
     }

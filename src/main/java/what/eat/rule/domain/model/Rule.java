@@ -56,7 +56,7 @@ public class Rule {
     private int countAccepted(MenuSchedule schedule) {
         return StreamUtils.count(schedule.stream(), menu -> {
             if(menu instanceof DefinedMenu) {
-                return ((DefinedMenu)menu).accept(compareTo);
+                return ((DefinedMenu)menu).has(compareTo);
             }
             return false;
 

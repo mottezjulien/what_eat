@@ -1,8 +1,14 @@
 package what.eat.menu.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import what.eat.generic.facade.LinkDTO;
 import what.eat.menu.domain.model.DefinedMenu;
 import what.eat.menu.domain.model.Menu;
@@ -14,10 +20,9 @@ import what.eat.recipe.infrastructure.persistence.repository.RecipeDishRepositor
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-
 @RestController
-@RequestMapping("/api/menus")
-public class MenuController {
+@RequestMapping("/api/menus/schedule")
+public class MenuScheduleController {
 
     //'HAOST' - URL
     //response default (links default, lang, version ...)
@@ -25,41 +30,52 @@ public class MenuController {
     @Autowired
     private MenuRepository menuRepository;
 
-    @Autowired
-    private RecipeDishRepository dishRepository;
-
-    @GetMapping("/week/current/")
+    @GetMapping("/current/")
     @ResponseStatus(value = HttpStatus.CREATED)
-    private MenuWeekDTO current() {
+    private MenuScheduleDTO current() {
         return toDTO(MenuSchedule.current());
     }
 
-
-    @PostMapping("/week/current/menu/now/")
+    @PostMapping("/{date}/menu/generate/")
     @ResponseStatus(value = HttpStatus.CREATED)
-    private MenuDTO now() throws MenuWeekException {
-        return toDTO(MenuSchedule.current().of(LocalDate.now()));
+    private MenuShortDTO generate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) throws MenuWeekException {
+        MenuSchedule schedule = MenuSchedule.of(date);
+        return toShortDTO(schedule.findOrGenerate(date));
     }
 
-    private MenuWeekDTO toDTO(MenuSchedule model) {
-        MenuWeekDTO dto = new MenuWeekDTO();
+    private MenuScheduleDTO toDTO(MenuSchedule model) {
+        MenuScheduleDTO dto = new MenuScheduleDTO();
         dto.setMenus(model.stream()
-                .map(this::toDTO)
+                .map(this::toShortDTO)
                 .collect(Collectors.toList()));
         return dto;
     }
 
-    private MenuDTO toDTO(Menu model) {
-        MenuDTO dto = new MenuDTO();
+    private MenuShortDTO toShortDTO(Menu model) {
+        MenuShortDTO dto = new MenuShortDTO();
         dto.setDate(model.date());
         if (model instanceof DefinedMenu) {
             DefinedMenu definedMenu = (DefinedMenu) model;
-            dto.setDishLabel(definedMenu.dishLabel());
+
+
+            DishShortDTO dishDTO = new DishShortDTO();
+            dishDTO.setId(definedMenu.dishInternalId());
+            dishDTO.setLabel(definedMenu.dishLabel());
+            dishDTO.getLinks()
+                    .add(new LinkDTO("details", "/api/dishes/" + definedMenu.dishInternalId() + "/", "GET"));
+            dto.setDish(dishDTO);
+
             dto.getLinks()
-                    .add(new LinkDTO("menu_details", "http://localhost:8080/api/menu/" + definedMenu.internalId() + "/", "GET"));
+                    .add(new LinkDTO("details", "/api/menus/" + definedMenu.internalId() + "/", "GET"));
+
+
+        } else {
+            dto.getLinks()
+                    .add(new LinkDTO("generate", "/api/menus/schedule/" + model.date() + "/menu/generate/", "POST"));
         }
         return dto;
     }
+
 
 
     /*

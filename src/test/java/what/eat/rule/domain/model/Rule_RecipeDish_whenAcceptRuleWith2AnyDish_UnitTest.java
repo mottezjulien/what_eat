@@ -1,22 +1,29 @@
 package what.eat.rule.domain.model;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import what.eat.Ports;
 import what.eat.menu.domain.model.DefinedMenu;
-import what.eat.menu.domain.model.Menu;
 import what.eat.menu.domain.model.MenuSchedule;
+import what.eat.recipe.domain.RecipeOutput;
 import what.eat.recipe.domain.model.RecipeDish;
-import what.eat.recipe.domain.model.RecipeDishFinal;
-import what.eat.recipe.domain.model.RecipeDishFinalSimple;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class Rule_RecipeDish_whenAcceptRuleWith2AnyDish_UnitTest {
 
-    private final RecipeDishFinal anyDish = new RecipeDishFinalSimple("any", "");
+    private final RecipeDish anyDish = new RecipeDish("any", "any");
+
+    @BeforeEach
+    void setup_givenRuleWithEqualsParentA() {
+        Ports ports = new Ports(null, null, mock(RecipeOutput.class));
+        Ports.setInstance(ports);
+    }
 
     @Test
     public void giverEquals2AbsentDish_thenNotAccept() {
@@ -79,7 +86,7 @@ public class Rule_RecipeDish_whenAcceptRuleWith2AnyDish_UnitTest {
     }
 
     private Rule absentDishRule(RuleComparator comparator, int value) {
-        return new Rule("", RulePriority.MUST, comparator, value, new RecipeDishFinalSimple("absent", ""));
+        return new Rule("", RulePriority.MUST, comparator, value, new RecipeDish("absent", ""));
     }
 
     private Rule anyDishRule(RuleComparator comparator, int value) {
@@ -97,7 +104,7 @@ public class Rule_RecipeDish_whenAcceptRuleWith2AnyDish_UnitTest {
     private MenuSchedule exampleSchedule() {
         MenuSchedule menuSchedule = new MenuSchedule();
         menuSchedule.insert(new DefinedMenu(anyDish, LocalDate.now().plusDays(1)));
-        menuSchedule.insert(new DefinedMenu(new RecipeDishFinalSimple("other", ""), LocalDate.now().plusDays(2)));
+        menuSchedule.insert(new DefinedMenu(new RecipeDish("other", ""), LocalDate.now().plusDays(2)));
         menuSchedule.insert(new DefinedMenu(anyDish, LocalDate.now().plusDays(3)));
         return menuSchedule;
     }

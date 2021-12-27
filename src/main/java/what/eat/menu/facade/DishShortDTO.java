@@ -3,33 +3,32 @@ package what.eat.menu.facade;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import what.eat.generic.facade.LinkDTO;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuDTO {
+public class DishShortDTO {
 
-    private String dishLabel;
+    private String id;
 
-    private LocalDate date;
+    private String label;
 
     @JsonProperty("_links")
     private List<LinkDTO> links = new ArrayList<>();
 
-    public String getDishLabel() {
-        return dishLabel;
+    public String getId() {
+        return id;
     }
 
-    public void setDishLabel(String dishLabel) {
-        this.dishLabel = dishLabel;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public String getLabel() {
+        return label;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public List<LinkDTO> getLinks() {

@@ -2,7 +2,7 @@ package what.eat.menu.domain.model;
 
 import what.eat.Ports;
 import what.eat.menu.domain.port.MenuOutput;
-import what.eat.recipe.domain.model.RecipeDishFinal;
+import what.eat.recipe.domain.model.RecipeDish;
 import what.eat.rule.domain.model.RuleEngine;
 import what.eat.rule.domain.model.RuleEngineException;
 import what.eat.utils.LocalDateUtils;
@@ -15,10 +15,14 @@ public class MenuSchedule {
 
     private static final int DURATION_WEEK = 7;
 
-    public static MenuSchedule current() {
+    public static MenuSchedule of(LocalDate date) {
         MenuOutput weakOutput = Ports.getInstance().menuOutput();
-        Optional<MenuSchedule> optSchedule = weakOutput.findByDate(LocalDate.now());
+        Optional<MenuSchedule> optSchedule = weakOutput.findByDate(date);
         return optSchedule.orElseGet(() -> weakOutput.persist(new MenuSchedule()));
+    }
+
+    public static MenuSchedule current() {
+        return of(LocalDate.now());
     }
 
     private final String internalId;
@@ -54,7 +58,7 @@ public class MenuSchedule {
         return end;
     }
 
-    public Menu of(LocalDate date) throws MenuWeekException {
+    public DefinedMenu findOrGenerate(LocalDate date) throws MenuWeekException {
         DefinedMenu menu = menusByDay.get(date);
         if (menu == null) {
             try {
@@ -67,7 +71,7 @@ public class MenuSchedule {
         return menu;
     }
 
-    private RecipeDishFinal generate(LocalDate date) throws RuleEngineException {
+    private RecipeDish generate(LocalDate date) throws RuleEngineException {
         RuleEngine ruleEngine = Ports.getInstance().ruleOutput()
                 .findAny()
                 .orElseGet(RuleEngine::new);
@@ -90,9 +94,4 @@ public class MenuSchedule {
         menusByDay.put(menu.date(), menu);
     }
 
-    /*public MenuSchedule copy() {
-        MenuSchedule copy = new MenuSchedule(begin, end);
-        menusByDay.values().forEach(copy::insert);
-        return copy;
-    }*/
 }

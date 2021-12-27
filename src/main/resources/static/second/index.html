@@ -11,8 +11,8 @@
         <h1>Planning courant</h1>
         <div v-for="(menu, index) in menus" :key="index">
             <span>{{menu.date}}</span>
-            <span>{{menu.dishLabel}}</span>
-            <span><button>Générer</button></span>
+            <span v-if="menu.dish">{{menu.dish.label}}</span>
+            <span><button v-if="shouldGenerate(menu)" @click="generate(menu)">Générer</button></span>
         </div>
     </div>
 

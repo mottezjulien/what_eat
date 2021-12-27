@@ -8,22 +8,11 @@ import what.eat.recipe.infrastructure.persistence.entity.RecipeDishEntity;
 public class RecipeDishEntityWrapper {
 
     public RecipeDish toModel(RecipeDishEntity entity) {
-        switch (entity.getType()) {
-            case ABSTRACT -> new RecipeDishAbstract(entity.getId(), entity.getLabel());
-            case FINAL_SIMPLE, FINAL_COMPOSITE -> toFinalModel(entity);
-        }
-        throw new IllegalArgumentException();
+        return switch (entity.getType()) {
+            case MISSING -> new RecipeDish(entity.getId(), entity.getLabel(), RecipeDish.RecipeDishType.MISSING);
+            case SELECTABLE_SIMPLE -> new RecipeDish(entity.getId(), entity.getLabel(), RecipeDish.RecipeDishType.SIMPLE);
+            case SELECTABLE_COMPOSITE -> new RecipeDish(entity.getId(), entity.getLabel(), RecipeDish.RecipeDishType.COMPOSITE);
+        };
     }
 
-    public RecipeDishFinal toFinalModel(RecipeDishEntity entity) {
-        switch (entity.getType()) {
-            case FINAL_SIMPLE -> {
-                return new RecipeDishFinalSimple(entity.getId(), entity.getLabel());
-            }
-            case FINAL_COMPOSITE -> {
-                return new RecipeDishFinalComposite(entity.getId(), entity.getLabel());
-            }
-        }
-        throw new IllegalArgumentException();
-    }
 }

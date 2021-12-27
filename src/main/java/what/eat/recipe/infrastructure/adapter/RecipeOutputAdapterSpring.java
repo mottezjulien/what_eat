@@ -4,10 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import what.eat.recipe.domain.RecipeOutput;
 import what.eat.recipe.domain.model.RecipeDish;
-import what.eat.recipe.domain.model.RecipeDishFinal;
 import what.eat.recipe.domain.model.RecipeDishType;
 import what.eat.recipe.infrastructure.persistence.entity.RecipeDishEntity;
 import what.eat.recipe.infrastructure.persistence.repository.RecipeDishRepository;
+import what.eat.utils.ListUtils;
+import what.eat.utils.StreamUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,23 +26,36 @@ public class RecipeOutputAdapterSpring implements RecipeOutput {
     private RecipeDishEntityWrapper dishWrapper;
 
     @Override
-    public Optional<RecipeDishFinal> anyFinal() {
-        return dishRepository.findFinals()
-                .stream().findAny()
-                .map(dishWrapper::toFinalModel);
+    public Stream<RecipeDish> allSelectables() {
+        return dishRepository.findAllSelectable()
+                .stream().map(dishWrapper::toModel);
     }
 
     @Override
-    public Stream<RecipeDishFinal> finalChildren(RecipeDish parent) {
+    public Optional<RecipeDish> anySelectable() {
+        return ListUtils.getRandom(dishRepository.findAllSelectable())
+                .map(dishWrapper::toModel);
+    }
 
+    @Override
+    public Stream<RecipeDish> selectableFlatChildren(RecipeDish parent) {
         RecipeDishEntity entity = dishRepository
                 .findById_FetchAllChildren(parent.internalId())
                 .orElseGet(RecipeDishEntity::new);
-
         return recursivelyFlat(entity)
                 .stream()
-                .filter(isFinal())
-                .map(dishWrapper::toFinalModel);
+                .filter(isSelectable())
+                .map(dishWrapper::toModel);
+    }
+
+    @Override
+    public Stream<RecipeDish> flatChildren(RecipeDish parent) {
+        RecipeDishEntity entity = dishRepository
+                .findById_FetchAllChildren(parent.internalId())
+                .orElseGet(RecipeDishEntity::new);
+        return recursivelyFlat(entity)
+                .stream()
+                .map(dishWrapper::toModel);
     }
 
     private List<RecipeDishEntity> recursivelyFlat(RecipeDishEntity entity) {
@@ -51,8 +65,8 @@ public class RecipeOutputAdapterSpring implements RecipeOutput {
         return result;
     }
 
-    private Predicate<RecipeDishEntity> isFinal() {
-        return dish -> dish.getType() == RecipeDishType.FINAL_SIMPLE || dish.getType() == RecipeDishType.FINAL_COMPOSITE;
+    private Predicate<RecipeDishEntity> isSelectable() {
+        return dish -> dish.getType() == RecipeDishType.SELECTABLE_SIMPLE || dish.getType() == RecipeDishType.SELECTABLE_COMPOSITE;
     }
 
 }

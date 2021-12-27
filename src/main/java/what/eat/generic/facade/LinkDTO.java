@@ -3,12 +3,8 @@ package what.eat.generic.facade;
 public class LinkDTO {
 
     private String id;
-    private String desc;
     private String url;
     private String method;
-
-    public LinkDTO() {
-    }
 
     public LinkDTO(String id, String url, String method) {
         this.id = id;
@@ -22,14 +18,6 @@ public class LinkDTO {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getUrl() {

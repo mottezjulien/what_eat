@@ -2,13 +2,12 @@ package what.eat.rule.infrastructure.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import what.eat.recipe.domain.model.RecipeDish;
-import what.eat.recipe.domain.model.RecipeDishFinal;
 import what.eat.recipe.domain.model.RecipeIndicator;
 import what.eat.recipe.infrastructure.adapter.RecipeDishEntityWrapper;
 import what.eat.recipe.infrastructure.persistence.entity.RecipeDishEntity;
 import what.eat.recipe.infrastructure.persistence.entity.RecipeIndicatorAbstractEntity;
-import what.eat.rule.domain.model.*;
+import what.eat.rule.domain.model.Rule;
+import what.eat.rule.domain.model.RuleEngine;
 import what.eat.rule.domain.port.RuleOutput;
 import what.eat.rule.persistence.entity.RuleEngineEntity;
 import what.eat.rule.persistence.entity.RuleEntity;
@@ -45,7 +44,7 @@ public class RuleOutputAdapterSpring implements RuleOutput {
     }
 
     private RecipeIndicator toModel(RecipeIndicatorAbstractEntity comparedTo) {
-        if(comparedTo instanceof RecipeDishEntity) {
+        if (comparedTo instanceof RecipeDishEntity) {
             return dishWrapper.toModel((RecipeDishEntity) comparedTo);
         }
         /*if(comparedTo instanceof RecipeTagEntity) {

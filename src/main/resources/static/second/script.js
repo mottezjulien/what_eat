@@ -1,8 +1,9 @@
 
-const URL_MENU = "/api/menus/";
-const URL_DISH = "/api/dishes/";
+const URL_MENU_SCHEDULE_ROOT = "/api/menus/schedule/";
+const URL_MENU_SCHEDULE_CURRENT = URL_MENU_SCHEDULE_ROOT + "current/";
 
-var webVue = null;
+
+var webVue
 
 webVue = new Vue({
     el: '#app',
@@ -14,19 +15,37 @@ webVue = new Vue({
     },
     methods: {
         findAllMenus: async function () {
-            let response = await axios.get(URL_MENU + "week/current/")
-            this.menus = response.data.menus.map(menu => this.plop(menu));
+            let response = await axios.get(URL_MENU_SCHEDULE_CURRENT)
+            this.menus = response.data.menus
         },
-        plop: function(menu) {
+        shouldGenerate: function (menu) {
+            return this.generateLink(menu);
+        },
+        generate: async function (menu) {
+            const link = this.generateLink(menu)
+            let response = await axios({
+                method: link.method,
+                url: link.url
+            });
+            console.log(response)
+        },
+        generateLink: function (menu) {
+            return menu._links.find(link => link.id == 'generate')
+        }
+
+        /*plop: function(menu) {
             let displayLabel = "Non défini";
-            if(!menu.displayLabel) {
-                displayLabel = menu.displayLabel;
+            if(menu.dishLabel) {
+                displayLabel = menu.dishLabel;
             }
             return {
                 "date" : menu.date,
-                "displayLabel" : displayLabel
+                "dish" : {
+                    "label" : displayLabel
+                }
             }
-        }
+        }*/
+
         /*create: async function() {
             let response = await axios.post(URL_MENU + "week/current/menu/now/");
             this.menus.push(response.data);

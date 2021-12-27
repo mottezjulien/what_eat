@@ -1,7 +1,7 @@
 package what.eat.rule.domain.model;
 
 import what.eat.menu.domain.model.MenuSchedule;
-import what.eat.recipe.domain.model.RecipeDishFinal;
+import what.eat.recipe.domain.model.RecipeDish;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class RuleEngine {
         rules.add(rule);
     }
 
-    public RecipeDishFinal generate(MenuSchedule menuSchedule, LocalDate day) throws RuleEngineException {
+    public RecipeDish generate(MenuSchedule menuSchedule, LocalDate day) throws RuleEngineException {
         //TODO -> Only Dish Rule
         RuleStrategy strategy = strategy(menuSchedule, day); //TODO <- NOT BDD, or NOT ?
         return strategy.findOne().orElseThrow(() -> new RuleEngineException("Any dish generated"));
