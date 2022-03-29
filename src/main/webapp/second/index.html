@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Planning courant</h1>
+        <div v-for="(menu, index) in menus" :key="index">
+            <span>{{menu.date}}</span>
+            <span v-if="menu.dish">{{menu.dish.label}}</span>
+            <span><button v-if="shouldGenerate(menu)" @click="generate(menu)">Générer</button></span>
+        </div>
+    </div>
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--<script src="https://unpkg.com/vue"></script>-->
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div id="container-dish-list">
+    <div class="container-fluid">
+        <h2>Liste des plats</h2>
+        <div v-for="(dish, index) in dishes" :key="index" class="row mb-1">
+            <div class="col-2">
+            </div>
+            <div class="col-2">
+                <label>{{dish.label}}</label>
+            </div>
+            <div class="col-2">
+                <label>{{dish.type}}</label>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-primary"
+                        @click="details(dish)">Détails
+                </button>
+            </div>
+            <div class="col-2">
+            </div>
+        </div>
+        <div class="row mb-1">
+            <button type="button" class="btn btn-primary"
+                    @click="displayUpdateDish(dish)">Création
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div id="container-dish-details">
+    <div class="modal" v-if="seen" style="display:block">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ dish.label }}</h5>
+                    <button type="button" class="close" @click="hide()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-1">
+                        <strong class="pr-1">Titre:</strong><span>{{ dish.label }}</span>
+                        <span v-for="(tag, index) in dish.tags" :key="index" class="badge badge-pill badge-primary">
+                            {{tag.label}}
+                        </span>
+                    <div class="mb-1">
+                        <strong class="pr-1">Type:</strong><span>{{ dish.type }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <strong class="pr-1">Description:</strong><span>à faire / à définir</span>
+                    </div>
+                    <div class="mb-1">
+                        <strong class="pr-1">Ingrédients:</strong>
+                        <span v-for="(ingredient, index) in dish.ingredients" :key="index">
+                            <template v-if="index > 0">,</template>
+                            {{ingredient.label}}
+                        </span>
+                    </div>
+                    <div class="mb-1">
+                        <strong class="pr-1">Relations:</strong>
+                        <span v-for="(relation, index) in dish.relations" :key="index">
+                            {{ relation.value.label }} : {{ relation.type }}
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="hide()">Editer</button>
+                    <button type="button" class="btn btn-info" @click="hide()">Détails</button>
+                    <button type="button" class="btn btn-secondary" @click="hide()">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
