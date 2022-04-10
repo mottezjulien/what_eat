@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import what.eat.data.persistence.entity.DataDishEntity;
 import what.eat.data.persistence.repository.DataDishJpaRepository;
-import what.eat.generic.type.dto.IdLabelDTO;
+import what.eat.generic.type.IdLabel;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -59,13 +59,13 @@ public class DataDishController {
             dto.setLabel(entity.getFrLabel());
             dto.setType(entity.getType().name());
             dto.setTags(entity.getTags().stream().map(tag -> {
-                IdLabelDTO tagDTO = new IdLabelDTO();
+                IdLabel tagDTO = new IdLabel();
                 tagDTO.setId(tag.getId());
                 tagDTO.setLabel(tag.getFrLabel());
                 return tagDTO;
             }).collect(Collectors.toList()));
             dto.setIngredients(entity.getIngredients().stream().map(ingredient -> {
-                IdLabelDTO tagDTO = new IdLabelDTO();
+                IdLabel tagDTO = new IdLabel();
                 tagDTO.setId(ingredient.getId());
                 tagDTO.setLabel(ingredient.getFrLabel());
                 return tagDTO;
@@ -73,7 +73,7 @@ public class DataDishController {
             dto.setRelations(entity.getParentRelations().stream().map(relation -> {
                 DishRelationResponseDTO relationResponseDTO = new DishRelationResponseDTO();
                 relationResponseDTO.setType(relation.getType().name()); //TODO Parent // Child
-                IdLabelDTO value = new IdLabelDTO();
+                IdLabel value = new IdLabel();
                 value.setId(relation.getParent().getId());
                 value.setLabel(relation.getParent().getFrLabel());
                 relationResponseDTO.setValue(value);

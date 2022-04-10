@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import what.eat.data.persistence.entity.DataDishEntity;
+import what.eat.data.persistence.entity.DataIngredientEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +26,9 @@ public interface DataDishJpaRepository extends JpaRepository<DataDishEntity, Str
 
     @Query(SELECT + FETCH_ALL + " WHERE dish.id = :dish_id")
     Optional<DataDishEntity> findOneFullFetch(@Param("dish_id") String id);
+
+
+    @Query( SELECT + " WHERE dish.frLabel = :frLabel")
+    Optional<DataDishEntity> finByFrLabel(@Param("frLabel") String frLabel);
 
 }

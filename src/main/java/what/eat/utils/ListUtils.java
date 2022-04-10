@@ -38,4 +38,8 @@ public class ListUtils {
         return Stream.concat(a.stream(), b.stream())
                 .collect(Collectors.toList());
     }
+
+    public static <T> boolean equalsIgnoreOrder(List<T> first, List<T> second) {
+        return first.size() == second.size() && first.containsAll(second) && second.containsAll(first);
+    }
 }

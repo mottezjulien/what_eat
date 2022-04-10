@@ -1,17 +1,17 @@
 package what.eat.data.facade;
 
-import what.eat.generic.type.dto.IdLabelDTO;
+import what.eat.generic.type.IdLabel;
 
 public class DishRelationResponseDTO {
 
     private String type;
-    private IdLabelDTO value;
+    private IdLabel value;
 
-    public void setValue(IdLabelDTO value) {
+    public void setValue(IdLabel value) {
         this.value = value;
     }
 
-    public IdLabelDTO getValue() {
+    public IdLabel getValue() {
         return value;
     }
 

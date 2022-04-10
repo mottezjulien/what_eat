@@ -1,6 +1,6 @@
 package what.eat.data.domain.model;
 
-import what.eat.data.plop.Combinator;
+import what.eat.generic.Combinator;
 import what.eat.utils.ListUtils;
 
 import java.util.ArrayList;
@@ -26,8 +26,11 @@ public class DataBookDish {
     }
 
     public void init(Map<DataDishElement, List<DataDishRelation>> elementWithRelations) {
+        this.flatElements.clear();
         this.flatElements.addAll(elementWithRelations.keySet());
+        this.elementWithRelations.clear();
         this.elementWithRelations.putAll(elementWithRelations);
+        this.dishes.clear();
         this.dishes.addAll(Stream.concat(readyDishes(), templateDishes()).collect(Collectors.toList()));
     }
 

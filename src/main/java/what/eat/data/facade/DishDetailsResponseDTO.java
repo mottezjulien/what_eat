@@ -1,6 +1,6 @@
 package what.eat.data.facade;
 
-import what.eat.generic.type.dto.IdLabelDTO;
+import what.eat.generic.type.IdLabel;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ public class DishDetailsResponseDTO {
     private String id;
     private String label;
     private String type;
-    private List<IdLabelDTO> tags;
-    private List<IdLabelDTO> ingredients;
+    private List<IdLabel> tags;
+    private List<IdLabel> ingredients;
     private List<DishRelationResponseDTO> relations;
 
     public void setId(String id) {
@@ -36,19 +36,19 @@ public class DishDetailsResponseDTO {
         return type;
     }
 
-    public List<IdLabelDTO> getTags() {
+    public List<IdLabel> getTags() {
         return tags;
     }
 
-    public void setTags(List<IdLabelDTO> tags) {
+    public void setTags(List<IdLabel> tags) {
         this.tags = tags;
     }
 
-    public List<IdLabelDTO> getIngredients() {
+    public List<IdLabel> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<IdLabelDTO> ingredients) {
+    public void setIngredients(List<IdLabel> ingredients) {
         this.ingredients = ingredients;
     }
 

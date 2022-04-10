@@ -2,7 +2,7 @@ package what.eat.data.plop;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import what.eat.core.brain.BrainRepository;
+import what.eat.generic.brain.BrainRepository;
 import what.eat.data.domain.model.DataDish;
 import what.eat.data.domain.model.DataId;
 import what.eat.data.persistence.repository.DataDishCacheRepository;
@@ -21,16 +21,12 @@ public class DataDishBrainRepositoryImpl implements BrainRepository<DataId, Stri
     @Override
     public List<Result<DataId, String>> findAll(Query<String> query) {
         //TODO c'est plus compliqué que cela (pas que Dish READY, penser Dish COMPONENT ...)
-        /*TreeQuery<DataDish> treeQuery = new TreeQuery<>();
-        TreeQuery<DataDish>.Node node = treeQuery.addNodeFromRoot(TreeQuery.Type.NONE);
-        query.wont().forEach(tagId -> {
-            treeQuery.addLeaf(node, dish -> dish.tags().anyMatch(tag -> tag.id().value().equals(tagId)));
-        });*/
 
         DataDishQuery dataDishQuery = new DataDishQuery();
-        query.wont().forEach(tagId -> dataDishQuery.add(DataDishQuery.Field.TAG_ID, DataDishQuery.Operation.DIFFERENT, tagId));
+        dataDishQuery.add(DataDishQuery.Field.TAG_ID, DataDishQuery.Operation.DONT_CONTAINS, query.wont());
 
         Stream<DataDish> dishes = cacheRepository.find(dataDishQuery);
+
         List<Result<DataId, String>> results = dishes.map(each -> {
             List<String> indicator = each.tags()
                     .map(tag -> tag.id().value()) //TODO
@@ -51,7 +47,7 @@ public class DataDishBrainRepositoryImpl implements BrainRepository<DataId, Stri
     @Override
     public Optional<DataId> findAny() {
         return cacheRepository.findAny()
-                .map(dish -> dish.id());
+                .map(DataDish::id);
     }
 
 }

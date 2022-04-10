@@ -34,18 +34,18 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkSize() {
         assertThat(cacheRepository.findAll())
-                .hasSize(10);
+                .hasSize(185);
     }
 
     @Test
     public void checkSaucissePuree() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Saucisse purée");
+        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Saucisse", "Purée (accompagnement)");
         assertThat(cacheRepository.find(query))
                 .hasSize(1)
                 .anySatisfy(dish -> {
                     assertThat(dish.id().value()).isNotNull();
-                    assertThat(dish.id().frLabel()).isEqualTo("Saucisse purée");
+                    assertThat(dish.id().frLabel()).satisfiesAnyOf(str -> str.equals("Saucisse, Purée (accompagnement)"), str -> str.equals("Purée (accompagnement), Saucisse"));
                     assertThat(dish.tags())
                             .hasSize(3)
                             .anySatisfy(tag -> {
@@ -67,12 +67,12 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkSaucisseLentille() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Saucisse lentille");
+        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Saucisse Lentille");
         assertThat(cacheRepository.find(query))
                 .hasSize(1)
                 .anySatisfy(dish -> {
                     assertThat(dish.id().value()).isNotNull();
-                    assertThat(dish.id().frLabel()).isEqualTo("Saucisse lentille");
+                    assertThat(dish.id().frLabel()).isEqualTo("Saucisse Lentille");
                     assertThat(dish.tags())
                             .hasSize(3)
                             .anySatisfy(tag -> {
@@ -94,12 +94,12 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkSaucisseLentilleCarotte() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Saucisse lentille carotte");
+        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Saucisse", "Lentilles (accompagnement)", "Carotte (Accompagnement)");
         assertThat(cacheRepository.find(query))
                 .hasSize(1)
                 .anySatisfy(dish -> {
                     assertThat(dish.id().value()).isNotNull();
-                    assertThat(dish.id().frLabel()).isEqualTo("Saucisse lentille carotte");
+                    assertThat(dish.id().frLabel()).isEqualTo("Saucisse Lentille Carotte");
                     assertThat(dish.tags())
                             .hasSize(4)
                             .anySatisfy(tag -> {
@@ -125,7 +125,7 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkTagliatelleCarbo() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Tagliatelle Carbonara");
+        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Tagliatelle Carbonara");
         assertThat(cacheRepository.find(query))
                 .hasSize(1)
                 .anySatisfy(dish -> {
@@ -135,7 +135,7 @@ public class DataDishCache_findAll_IntegrationTest {
                             .hasSize(5)
                             .anySatisfy(tag -> {
                                 assertThat(tag.id().value()).isNotNull();
-                                assertThat(tag.id().frLabel()).isEqualTo("Pate");
+                                assertThat(tag.id().frLabel()).isEqualTo("Pâte");
                             })
                             .anySatisfy(tag -> {
                                 assertThat(tag.id().value()).isNotNull();
@@ -160,7 +160,7 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkSpaghettiBolo() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Spaghetti bolognaise");
+        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Spaghetti bolognaise");
         assertThat(cacheRepository.find(query))
                 .hasSize(1)
                 .anySatisfy(dish -> {
@@ -170,7 +170,7 @@ public class DataDishCache_findAll_IntegrationTest {
                             .hasSize(4)
                             .anySatisfy(tag -> {
                                 assertThat(tag.id().value()).isNotNull();
-                                assertThat(tag.id().frLabel()).isEqualTo("Pate");
+                                assertThat(tag.id().frLabel()).isEqualTo("Pâte");
                             })
                             .anySatisfy(tag -> {
                                 assertThat(tag.id().value()).isNotNull();
@@ -191,12 +191,12 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkGratinChouxFleur() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Gratin de choux-fleur");
+        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Gratin de choux-fleur");
         assertThat(cacheRepository.find(query)).anySatisfy(dish -> {
             assertThat(dish.id().value()).isNotNull();
             assertThat(dish.id().frLabel()).isEqualTo("Gratin de choux-fleur");
             assertThat(dish.tags())
-                    .hasSize(4)
+                    .hasSize(5)
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
                         assertThat(tag.id().frLabel()).isEqualTo("Végétarien");
@@ -204,6 +204,10 @@ public class DataDishCache_findAll_IntegrationTest {
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
                         assertThat(tag.id().frLabel()).isEqualTo("Familial");
+                    })
+                    .anySatisfy(tag -> {
+                        assertThat(tag.id().value()).isNotNull();
+                        assertThat(tag.id().frLabel()).isEqualTo("Fromage");
                     })
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
@@ -219,23 +223,27 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkGratinPate() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.EQUALS, "Gratin de pate");
+        query.add(DataDishQuery.Field.FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Gratin de pate");
         assertThat(cacheRepository.find(query)).anySatisfy(dish -> {
             assertThat(dish.id().value()).isNotNull();
             assertThat(dish.id().frLabel()).isEqualTo("Gratin de pate");
             assertThat(dish.tags())
-                    .hasSize(5)
+                    .hasSize(6)
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
                         assertThat(tag.id().frLabel()).isEqualTo("Végétarien");
                     })
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
-                        assertThat(tag.id().frLabel()).isEqualTo("Pate");
+                        assertThat(tag.id().frLabel()).isEqualTo("Pâte");
                     })
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
                         assertThat(tag.id().frLabel()).isEqualTo("Féculent");
+                    })
+                    .anySatisfy(tag -> {
+                        assertThat(tag.id().value()).isNotNull();
+                        assertThat(tag.id().frLabel()).isEqualTo("Fromage");
                     })
                     .anySatisfy(tag -> {
                         assertThat(tag.id().value()).isNotNull();
@@ -251,8 +259,7 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkHamburgerPouletFrite() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.EQUALS, "Hamburger Poulet");
-        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.EQUALS, "Frite");
+        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Hamburger Poulet", "Frite (accompagnement)");
         assertThat(cacheRepository.find(query)).anySatisfy(dish -> {
             assertThat(dish.id().value()).isNotNull();
             assertThat(dish.id().frLabel()).contains("Hamburger Poulet", "Frite");
@@ -276,8 +283,7 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkHamburgerSteakFrite() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.EQUALS, "Hamburger Steak");
-        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.EQUALS, "Frite");
+        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Hamburger Steak", "Frite (accompagnement)");
         assertThat(cacheRepository.find(query)).anySatisfy(dish -> {
             assertThat(dish.id().value()).isNotNull();
             assertThat(dish.id().frLabel()).contains("Hamburger Steak", "Frite");
@@ -301,11 +307,10 @@ public class DataDishCache_findAll_IntegrationTest {
     @Test
     public void checkHamburgerVégéChampiFrite() {
         DataDishQuery query = new DataDishQuery();
-        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.EQUALS, "Hamburger végétarien au champignon");
-        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.EQUALS, "Frite");
+        query.add(DataDishQuery.Field.RELATION_FR_LABEL, DataDishQuery.Operation.CONTAINS_ONLY, "Hamburger Végétarien", "Frite (accompagnement)");
         assertThat(cacheRepository.find(query)).anySatisfy(dish -> {
             assertThat(dish.id().value()).isNotNull();
-            assertThat(dish.id().frLabel()).contains("Hamburger végétarien au champignon", "Frite");
+            assertThat(dish.id().frLabel()).contains("Hamburger Végétarien", "Frite");
             assertThat(dish.tags())
                     .hasSize(2)
                     .anySatisfy(tag -> {

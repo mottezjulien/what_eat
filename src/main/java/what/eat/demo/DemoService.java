@@ -2,10 +2,10 @@ package what.eat.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import what.eat.core.brain.Brain;
-import what.eat.core.brain.BrainException;
-import what.eat.core.brain.BrainQuery;
-import what.eat.core.brain.BrainResult;
+import what.eat.generic.brain.Brain;
+import what.eat.generic.brain.BrainException;
+import what.eat.generic.brain.BrainQuery;
+import what.eat.generic.brain.BrainResult;
 import what.eat.data.persistence.entity.DataTagEntity;
 import what.eat.data.persistence.repository.DataTagRepository;
 import what.eat.data.plop.DataDishBrainRepositoryImpl;

@@ -10,11 +10,12 @@ public class DataDishRelationAtom {
         this.with = with;
     }
 
+    public DataDishRelationType type() {
+        return type;
+    }
+
     public DataId with() {
         return with;
     }
 
-    public DataDishRelation toDetails(DataDishAtom atom) {
-        return new DataDishRelation(type, atom);
-    }
 }
