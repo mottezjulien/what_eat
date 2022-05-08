@@ -1,11 +1,11 @@
 package what.eat.demo;
 
-public class Demo {
+public class DemoDish {
 
     private final String id;
     private final String frLabel;
 
-    public Demo(String id, String frLabel) {
+    public DemoDish(String id, String frLabel) {
         this.id = id;
         this.frLabel = frLabel;
     }

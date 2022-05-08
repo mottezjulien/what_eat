@@ -3,13 +3,12 @@ package what.eat.generic.brain;
 import what.eat.utils.ListUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Brain<Obj, Indicator> {
 
-    /*public static class Option {
-        Max, Repeat
-    }*/
+
 
     private final BrainRepository<Obj, Indicator> repository;
 
@@ -17,15 +16,15 @@ public class Brain<Obj, Indicator> {
         this.repository = repository;
     }
 
-    public BrainResult<Obj> generate(BrainQuery<Indicator> query/*, Option option*/) throws BrainException {
+    public BrainResult<Obj> generate(BrainQuery<Indicator> query) throws BrainException {
         BrainQuery<Indicator> current = query.copy();
         BrainResult<Obj> result = new BrainResult<>();
-        while(!result.isComplete()) {
-            List<BrainRepository.Result<Obj, Indicator>> found = repository.findAll(toRepository(current));
+        while(!result.isComplete(current.option())) {
+            List<BrainRepository.Result<Obj, Indicator>> found = repository.findOnly(current.limit());
             if(found.isEmpty()) {
                 result.add(repository.findAny().orElseThrow(BrainException::new));
             } else {
-                BrainRepository.Result<Obj, Indicator> selected = ListUtils.random(found).orElseThrow(BrainException::new);
+                BrainRepository.Result<Obj, Indicator> selected = select(found, result, current);
                 current = current.reduce(selected.indicators());
                 result.add(selected.value());
             }
@@ -33,20 +32,29 @@ public class Brain<Obj, Indicator> {
         return result;
     }
 
-    private BrainRepository.Query<Indicator> toRepository(BrainQuery<Indicator> query) {
-        List<Indicator> must = query.stream()
-                .filter(item -> item.type() == BrainQuery.Type.ASK)
-                .filter(item -> item.number() > 0)
-                .map(item -> item.indicator())
-                .distinct()
+
+
+
+
+    private BrainRepository.Result<Obj, Indicator> select(List<BrainRepository.Result<Obj, Indicator>> found, BrainResult<Obj> currentResult, BrainQuery<Indicator> query) throws BrainException {
+        Optional<BrainRepository.Result<Obj, Indicator>> random = ListUtils.random(filter(found, currentResult, query));
+        if(random.isEmpty()){
+            random = ListUtils.random(found);
+        }
+        return random.orElseThrow(BrainException::new);
+    }
+
+    private List<BrainRepository.Result<Obj,Indicator>> filter(List<BrainRepository.Result<Obj, Indicator>> found, BrainResult<Obj> currentResult, BrainQuery<Indicator> query) {
+        List<Indicator> biggestAsk = query.biggestAsk();
+        return found.stream()
+                .filter(each -> query.option().isRepeat() || !currentResult.contains(each.value()))
+                .filter(each ->  !isComplicated(query, currentResult) || each.indicators().stream().anyMatch(biggestAsk::contains))
+                //.filter(each -> each.indicators().stream().anyMatch(indicator -> query.ask(indicator)))
                 .collect(Collectors.toList());
-        List<Indicator> wont = query.stream()
-                .filter(item -> item.type() == BrainQuery.Type.NO_MORE)
-                .filter(item -> item.number() == 0)
-                .map(item -> item.indicator())
-                .distinct()
-                .collect(Collectors.toList());
-        return new BrainRepository.Query<>(must, wont);
+    }
+
+    private boolean isComplicated(BrainQuery<Indicator> query, BrainResult<Obj> currentResult) {
+        return currentResult.missing(query.option()) <= query.nbAsk();
     }
 
 }

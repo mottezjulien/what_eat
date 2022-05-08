@@ -57,6 +57,11 @@ public class DataDishInitService {
 
         fillSaucisseLentilleDishes();
 
+        fillKebabPizzaAnStudientDishes();
+
+        fillTarteAndFamilyDishes();
+
+
         ///
 
         // Tarte
@@ -75,6 +80,9 @@ public class DataDishInitService {
 
         DataTagEntity veggyTag = new DataTagEntity("Végétarien");
         tagRepository.save(veggyTag);
+
+        DataTagEntity streetTag = new DataTagEntity("Street-food");
+        tagRepository.save(streetTag);
 
         DataTagEntity familyTag = new DataTagEntity("Familial");
         tagRepository.save(familyTag);
@@ -145,20 +153,20 @@ public class DataDishInitService {
         steakHacheIngredient.getTags().add(tagByLabel("Boeuf"));
         ingredientRepository.save(steakHacheIngredient);
 
-
-
-        /*
-        INGREDIENT -> MORE SPE (not tag, laitage existe)
-        DataIngredientEntity fromageIngredient = new DataIngredientEntity("Fromage");
-        fromageIngredient.getTags().add(laitageTag);
-        ingredientRepository.save(fromageIngredient);*/
-
-
         ///// LEGUMES
+        final DataTagEntity legumeTag = tagByLabel("Légume");
 
         DataIngredientEntity chouFleurIngredient = new DataIngredientEntity("Choux-fleur");
-        chouFleurIngredient.getTags().add(tagByLabel("Légume"));
+        chouFleurIngredient.getTags().add(legumeTag);
         ingredientRepository.save(chouFleurIngredient);
+
+        DataIngredientEntity courgetteIngredient = new DataIngredientEntity("Courgette");
+        courgetteIngredient.getTags().add(legumeTag);
+        ingredientRepository.save(courgetteIngredient);
+
+        DataIngredientEntity tomateIngredient = new DataIngredientEntity("Tomate");
+        tomateIngredient.getTags().add(legumeTag);
+        ingredientRepository.save(tomateIngredient);
 
 
         //// LAITAGE
@@ -392,6 +400,7 @@ public class DataDishInitService {
     private void fillHamburgerDishes() {
 
         DataDishEntity hamburgerNode = new DataDishEntity(DataDishEntity.Type.NODE_GENERIC, "Hamburger (Générique)");
+        hamburgerNode.getTags().add(tagByLabel("Street-food"));
         dishRepository.save(hamburgerNode);
 
         DataDishEntity steakBurgerDish = new DataDishEntity(DataDishEntity.Type.NODE_ITEM, "Hamburger Steak");
@@ -431,6 +440,14 @@ public class DataDishInitService {
         dishRepository.save(gratinChouFleurDish);
         dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, gratin, gratinChouFleurDish));
 
+        DataDishEntity gratinCourgetteDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Gratin de courgette");
+        gratinCourgetteDish.getTags().add(tagByLabel("Végétarien"));
+        gratinCourgetteDish.getIngredients().add(ingredientByLabel("Courgette"));
+        gratinCourgetteDish.getIngredients().add(ingredientByLabel("Crème fraiche"));
+        gratinCourgetteDish.getIngredients().add(ingredientByLabel("Gruyère"));
+        dishRepository.save(gratinCourgetteDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, gratin, gratinCourgetteDish));
+
         DataDishEntity gratinPateDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Gratin de pate");
         gratinPateDish.getTags().add(tagByLabel("Végétarien"));
         gratinPateDish.getIngredients().add(ingredientByLabel("Crème fraiche"));
@@ -438,6 +455,13 @@ public class DataDishInitService {
         dishRepository.save(gratinPateDish);
         dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, gratin, gratinPateDish));
         dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, dishByLabel("Pate (plat)"), gratinPateDish));
+
+        DataDishEntity gratinDauphinoisDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Gratin dauphinois");
+        gratinDauphinoisDish.getTags().add(tagByLabel("Végétarien"));
+        gratinDauphinoisDish.getIngredients().add(ingredientByLabel("Crème fraiche"));
+        gratinDauphinoisDish.getIngredients().add(ingredientByLabel("Pomme de terre"));
+        dishRepository.save(gratinDauphinoisDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, gratin, gratinDauphinoisDish));
 
     }
 
@@ -448,6 +472,7 @@ public class DataDishInitService {
         dishRepository.save(lentille);
 
         DataDishEntity saucisseLentille = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Saucisse Lentille");
+        saucisseLentille.getTags().add(tagByLabel("Familial"));
         dishRepository.save(saucisseLentille);
         dishRelationRepository.save(relation(DataDishRelationEntity.Type.MEAT, dishByLabel("Saucisse"), saucisseLentille));
         dishRelationRepository.save(relation(DataDishRelationEntity.Type.SIDE, lentille, saucisseLentille));
@@ -460,6 +485,101 @@ public class DataDishInitService {
 
     }
 
+
+    private void fillKebabPizzaAnStudientDishes() {
+        DataDishEntity kebabNode = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Kebab");
+        kebabNode.getTags().add(tagByLabel("Street-food"));
+        kebabNode.getTags().add(tagByLabel("Viande"));
+        dishRepository.save(kebabNode);
+
+        DataDishEntity kebabFriteDish = new DataDishEntity(DataDishEntity.Type.DISH_TEMPLATE, "Kebab frite");
+        dishRepository.save(kebabFriteDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.MEAT, kebabNode, kebabFriteDish));
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.SIDE, dishByLabel("Frite (accompagnement)") , kebabFriteDish));
+        
+        DataDishEntity burritosDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Burritos");
+        burritosDish.getTags().add(tagByLabel("Street-food"));
+        dishRepository.save(burritosDish);
+
+        DataDishEntity pizzaDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Pizza");
+        pizzaDish.getTags().add(tagByLabel("Street-food"));
+        pizzaDish.getTags().add(tagByLabel("Familial"));
+        dishRepository.save(pizzaDish);
+
+        DataDishEntity pizzaVegeDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Pizza végétarienne");
+        pizzaDish.getTags().add(tagByLabel("Végétarien"));
+        dishRepository.save(pizzaVegeDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, pizzaDish, pizzaVegeDish));
+    }
+
+    private void fillTarteAndFamilyDishes(){
+        DataDishEntity quicheLorraineDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Quiche lorraine");
+        quicheLorraineDish.getTags().add(tagByLabel("Familial"));
+        dishRepository.save(quicheLorraineDish);
+
+        DataDishEntity tarteLegumeDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Tarte aux légumes");
+        tarteLegumeDish.getTags().add(tagByLabel("Familial"));
+        tarteLegumeDish.getTags().add(tagByLabel("Végétarien"));
+        dishRepository.save(tarteLegumeDish);
+
+        DataDishEntity tarteTomateDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Tarte à la tomate");
+        tarteTomateDish.getTags().add(tagByLabel("Familial"));
+        tarteTomateDish.getTags().add(tagByLabel("Végétarien"));
+        dishRepository.save(tarteTomateDish);
+
+        DataDishEntity tarteThonDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Tarte au thon");
+        tarteThonDish.getTags().add(tagByLabel("Familial"));
+        tarteThonDish.getTags().add(tagByLabel("Poisson"));
+        dishRepository.save(tarteThonDish);
+
+        DataDishEntity boeufBourguignonDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Boeuf bourguignon");
+        boeufBourguignonDish.getTags().add(tagByLabel("Familial"));
+        boeufBourguignonDish.getTags().add(tagByLabel("Boeuf"));
+        dishRepository.save(boeufBourguignonDish);
+
+        DataDishEntity blanquetteVeauDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Blanquette de veau");
+        blanquetteVeauDish.getTags().add(tagByLabel("Familial"));
+        blanquetteVeauDish.getTags().add(tagByLabel("Boeuf"));
+        dishRepository.save(blanquetteVeauDish);
+
+        DataDishEntity cassouletDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Cassoulet");
+        cassouletDish.getTags().add(tagByLabel("Familial"));
+        cassouletDish.getTags().add(tagByLabel("Porc"));
+        dishRepository.save(cassouletDish);
+
+        DataDishEntity lasagneDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Lasagne");
+        lasagneDish.getTags().add(tagByLabel("Familial"));
+        lasagneDish.getTags().add(tagByLabel("Boeuf"));
+        dishRepository.save(lasagneDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, dishByLabel("Pate (plat)"), lasagneDish));
+
+        DataDishEntity avecFarceGeneric = new DataDishEntity(DataDishEntity.Type.NODE_GENERIC, "Plat à farce");
+        avecFarceGeneric.getTags().add(tagByLabel("Familial"));
+        avecFarceGeneric.getTags().add(tagByLabel("Viande"));
+        dishRepository.save(avecFarceGeneric);
+
+        DataDishEntity tomatesFarciesDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Tomates farcies");
+        tomatesFarciesDish.getIngredients().add(ingredientByLabel("Tomate"));
+        dishRepository.save(tomatesFarciesDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, avecFarceGeneric, tomatesFarciesDish));
+
+        DataDishEntity courgettesFarciesDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Courgettes farcies");
+        courgettesFarciesDish.getIngredients().add(ingredientByLabel("Courgette"));
+        dishRepository.save(courgettesFarciesDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, avecFarceGeneric, courgettesFarciesDish));
+
+        DataDishEntity butternutFarciesDish = new DataDishEntity(DataDishEntity.Type.DISH_READY, "Butternuts farcies");
+        dishRepository.save(butternutFarciesDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.FULL, avecFarceGeneric, butternutFarciesDish));
+
+        //Farce & riz
+        DataDishEntity farceRiceDish = new DataDishEntity(DataDishEntity.Type.DISH_TEMPLATE, "Farce & riz");
+        dishRepository.save(farceRiceDish);
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.MEAT, avecFarceGeneric, farceRiceDish));
+        dishRelationRepository.save(relation(DataDishRelationEntity.Type.SIDE, dishByLabel("Riz (accompagnement)") , farceRiceDish));
+
+    }
+    
 
     private DataTagEntity tagByLabel(String label) {
         return tagRepository.finByFrLabel(label).orElseThrow(RuntimeException::new);

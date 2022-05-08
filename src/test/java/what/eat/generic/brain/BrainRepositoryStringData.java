@@ -25,20 +25,12 @@ public class BrainRepositoryStringData implements BrainRepository<StringData, St
     }
 
     @Override
-    public List<Result<StringData, StringDataIndicator>> findAll(Query<StringDataIndicator> query) {
+    public List<Result<StringData, StringDataIndicator>> findOnly(List<StringDataIndicator> wont) {
         return list
                 .stream()
-                .filter(data -> isWillNot(data, query.wont()))
-                .flatMap(data -> {
-                    if(query.must().isEmpty()) {
-                        return Stream.of(new Result<StringData, StringDataIndicator>(data, List.of()));
-                    }
-                    List<StringDataIndicator> selected = match(query.must(), data);
-                    if (!selected.isEmpty()) {
-                        return Stream.of(new Result<>(data, selected));
-                    }
-                    return Stream.empty();
-                }).collect(Collectors.toList());
+                .filter(data -> isWillNot(data, wont))
+                .map(data -> new Result<>(data, List.of(new StringDataIndicator(data.value().substring(0,3)))))
+                .collect(Collectors.toList());
     }
 
     private List<StringDataIndicator> match(List<StringDataIndicator> indicators, StringData data) {

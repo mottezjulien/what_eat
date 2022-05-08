@@ -1,6 +1,6 @@
-package what.eat.demo;
+package what.eat.demo.dto;
 
-public class DemoResponse {
+public class DemoDishResponse {
 
     private String id;
     private String label;

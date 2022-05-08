@@ -9,13 +9,16 @@ public class BrainResult<Obj> implements Iterable<Obj> {
 
     private List<Obj> list = new ArrayList<>();
 
-    public boolean isComplete() {
-        int max = 5;
-        return list.size() >= max;
-    }
-
     public void add(Obj obj) {
         list.add(obj);
+    }
+
+    public boolean isComplete(BrainOption option) {
+        return missing(option) == 0;
+    }
+
+    public int missing(BrainOption option) {
+        return Integer.max(option.getMax() - list.size(), 0);
     }
 
     @Override
@@ -25,5 +28,9 @@ public class BrainResult<Obj> implements Iterable<Obj> {
 
     public Stream<Obj> stream() {
         return list.stream();
+    }
+
+    public boolean contains(Obj value) {
+        return list.contains(value);
     }
 }

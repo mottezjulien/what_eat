@@ -5,29 +5,9 @@ import java.util.Optional;
 
 public interface BrainRepository<Obj, Indicator> {
 
-    List<Result<Obj, Indicator>> findAll(Query<Indicator> query);
+    List<Result<Obj, Indicator>> findOnly(List<Indicator> wont);
 
     Optional<Obj> findAny();
-
-    class Query<Indicator> {
-
-        private List<Indicator> must;
-
-        private List<Indicator> wont;
-
-        public Query(List<Indicator> must, List<Indicator> wont) {
-            this.must = must;
-            this.wont = wont;
-        }
-
-        public List<Indicator> must() {
-            return must;
-        }
-
-        public List<Indicator> wont() {
-            return wont;
-        }
-    }
 
     class Result<Obj, Indicator> {
 

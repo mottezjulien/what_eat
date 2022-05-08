@@ -1,5 +1,7 @@
 package what.eat.demo;
 
+import what.eat.data.domain.model.DataTag;
+
 public class DemoRule {
 
     public enum Type {
@@ -7,13 +9,13 @@ public class DemoRule {
     }
 
     private Type type;
-    private String tagId;
+    private DataTag tag;
     private int number;
     private String label;
 
-    public DemoRule(Type type, String tagId, int number, String label) {
+    public DemoRule(Type type, DataTag tag, int number, String label) {
         this.type = type;
-        this.tagId = tagId;
+        this.tag = tag;
         this.number = number;
         this.label = label;
     }
@@ -22,8 +24,8 @@ public class DemoRule {
         return type;
     }
 
-    public String tagId() {
-        return tagId;
+    public DataTag tag() {
+        return tag;
     }
 
     public int number() {

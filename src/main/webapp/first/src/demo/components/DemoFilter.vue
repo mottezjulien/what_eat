@@ -43,14 +43,11 @@
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="gridCheck1" disabled>
                       <label class="form-check-label" for="gridCheck1">
-                        Sans doublon
+                        Accepte les doublons
                       </label>
                     </div>
                   </div>
                 </div>
-
-
-
         </form>
       </div>
     </div>
